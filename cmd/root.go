@@ -11,6 +11,9 @@ var rootCmd = &cobra.Command{
 	Use:   "didi",
 	Short: "Didi CLI - Jira ticket management tool",
 	Long:  `A CLI tool for managing Jira tickets with local workspace integration.`,
+	CompletionOptions: cobra.CompletionOptions{
+		DisableDefaultCmd: true,
+	},
 }
 
 func Execute() {
