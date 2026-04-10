@@ -204,10 +204,18 @@ After running `didi init`, you can use the `/didi` command in Claude Code:
 
 ### Generate implementation plan
 ```
-/didi plan DDI-456
+/didi plan              # Uses context to determine ticket
+/didi plan DDI-456      # Explicit ticket ID
 ```
 
-Claude will analyze the codebase and generate a detailed technical implementation plan focused on code changes:
+Claude will analyze the codebase and generate a detailed technical implementation plan focused on code changes.
+
+**Ticket resolution:** If no ticket ID is provided, Claude will check:
+1. `.jira/.last-ticket` for the most recently opened ticket
+2. Recent conversation for mentioned ticket IDs
+3. Available workspaces in `.jira/` directory
+
+The plan includes:
 - Technical implementation steps with code examples
 - Testing strategy (unit, integration, e2e tests)
 - Test files to create/modify

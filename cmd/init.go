@@ -25,7 +25,8 @@ Manage Jira tickets using the didi CLI tool with local workspace integration.
 /didi list
 /didi desc DDI-123
 /didi open DDI-456
-/didi plan DDI-456
+/didi plan              # Uses context to determine ticket
+/didi plan DDI-456      # Explicit ticket ID
 /didi save
 /didi save DDI-123
 ` + "```" + `
@@ -50,9 +51,16 @@ Opens a Jira ticket and creates a local workspace with:
 - Execution plan extracted from comments (if available)
 - Saves ticket as the "last ticket" for convenience
 
-### ` + "`/didi plan TICKET-ID`" + `
+### ` + "`/didi plan [TICKET-ID]`" + `
 
-Generates a technical implementation plan focused on code changes for a quality PR:
+Generates a technical implementation plan focused on code changes for a quality PR.
+
+**Ticket Resolution (if no ticket ID provided):**
+1. Check ` + "`.jira/.last-ticket`" + ` file for most recently opened ticket
+2. Look for ticket IDs mentioned in recent conversation (e.g., "DDI-123", "LTD-456")
+3. Check ` + "`.jira/`" + ` directory for available workspaces
+4. If multiple options, ask user which ticket to use
+5. If no ticket found, ask user to specify or run ` + "`/didi open TICKET-ID`" + ` first
 
 **What to Include:**
 - **Technical Implementation Steps** - Detailed steps with code examples showing what to change
@@ -91,7 +99,7 @@ Saves the local execution plan back to Jira as a comment:
 
 Parse the user's input to extract:
 1. The subcommand: ` + "`list`" + `, ` + "`desc`" + `, ` + "`open`" + `, ` + "`plan`" + `, or ` + "`save`" + `
-2. The ticket ID (e.g., ` + "`DDI-123`" + `, ` + "`LTD-456`" + `) - optional for ` + "`save`" + ` and ` + "`list`" + ` commands
+2. The ticket ID (e.g., ` + "`DDI-123`" + `, ` + "`LTD-456`" + `) - optional for ` + "`plan`" + `, ` + "`save`" + `, and ` + "`list`" + ` commands
 
 ### Step 2: Execute Command
 
@@ -127,19 +135,25 @@ This will:
 
 This does NOT run a didi command - you generate the plan directly using your AI capabilities.
 
-1. **Check if workspace exists:**
+1. **Determine ticket ID (if not provided):**
+   - Read ` + "`.jira/.last-ticket`" + ` for last opened ticket
+   - Or check conversation history for recently mentioned ticket IDs
+   - Or list ` + "`.jira/`" + ` directory to see available workspaces
+   - If ambiguous or none found, ask user which ticket
+
+2. **Check if workspace exists:**
    - Look for ` + "`.jira/{TICKET-ID}/`" + ` directory
    - If doesn't exist, run ` + "`didi open {TICKET-ID}`" + ` first
 
-2. **Read ticket information:**
+3. **Read ticket information:**
    - Read ` + "`.jira/{TICKET-ID}/{TICKET-ID}.md`" + ` to understand the requirements
 
-3. **Analyze codebase:**
+4. **Analyze codebase:**
    - Search for relevant files using Grep/Glob
    - Understand existing patterns and architecture
    - Identify which files need changes
 
-4. **Generate implementation plan:**
+5. **Generate implementation plan:**
    Create a detailed technical plan in ` + "`.jira/{TICKET-ID}/plan.md`" + ` with this structure:
 
 ` + "```markdown" + `
@@ -222,7 +236,8 @@ describe('Feature', () => {
 | ` + "`path/to/types.ext`" + ` | Modify | Add new type definitions |
 ` + "```" + `
 
-5. **Display summary:**
+6. **Display summary:**
+   - Show which ticket the plan was created for
    - Show which files will be changed
    - Mention where the plan is saved
    - Offer to make edits if needed
