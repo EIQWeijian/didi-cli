@@ -1,0 +1,149 @@
+# Didi CLI
+
+A CLI tool for managing Jira tickets with local workspace integration.
+
+## Features
+
+- List active sprint tickets with clickable hyperlinks
+- Fetch Jira ticket information and create local workspaces
+- Automatically extract execution plans from ticket comments
+- Store ticket details in markdown format
+- Sync local execution plan changes back to Jira as comments
+- Track last opened ticket for quick operations
+- Interactive kanban board for sprint management
+- Claude Code integration with `/didi` skill for AI-powered workflow
+
+## Installation
+
+### Build the binary
+
+```bash
+go build -o ~/go/bin/didi
+```
+
+### Initialize didi
+
+After building the binary, initialize didi to install the Claude Code skill and verify your environment:
+
+```bash
+didi init
+```
+
+This will:
+- Check that required Jira environment variables are set
+- Install the `/didi` skill to `~/.claude/skills/didi/`, making it available in all Claude Code sessions
+
+## Configuration
+
+Set the following environment variables:
+
+```bash
+export JIRA_API_TOKEN="your-jira-api-token"
+export JIRA_BASE_URL="https://your-domain.atlassian.net"
+export JIRA_EMAIL="your-email@example.com"
+```
+
+### Getting a Jira API Token
+
+1. Go to https://id.atlassian.com/manage-profile/security/api-tokens
+2. Click "Create API token"
+3. Give it a name and copy the token
+4. Set it as the `JIRA_API_TOKEN` environment variable
+
+## Usage
+
+### CLI Usage
+
+#### Open a Jira ticket
+
+```bash
+./didi open DDI-435
+```
+
+This command will:
+1. Create a folder structure: `.jira/DDI-435/`
+2. Fetch the ticket information from Jira
+3. Save ticket details to `.jira/DDI-435/DDI-435.md`
+4. Extract any execution plan from comments and save to `.jira/DDI-435/plan.md`
+5. Save as the "last ticket" for convenience
+
+#### List active sprint tickets
+
+```bash
+./didi list
+```
+
+Non-interactive list of all tickets assigned to you in the active sprint, grouped by status. Ticket IDs are clickable hyperlinks in supported terminals (iTerm2, VS Code terminal, Windows Terminal, modern Terminal.app).
+
+#### View ticket details
+
+```bash
+./didi desc DDI-123
+```
+
+Displays formatted ticket information in the terminal with colors and clickable links.
+
+#### Save execution plan to Jira
+
+```bash
+./didi save          # Uses last opened ticket
+./didi save DDI-123  # Specify ticket ID
+```
+
+Reads `.jira/{TICKET-ID}/plan.md` and posts it as a comment to the Jira ticket. This syncs your local plan changes back to Jira.
+
+### Example Output
+
+**Open command:**
+```
+✓ Workspace ready: .jira/DDI-435
+```
+
+**Save command:**
+```
+✓ Plan synced to Jira ticket DDI-123
+View at: https://your-domain.atlassian.net/browse/DDI-123
+```
+
+## Claude Code Integration
+
+After running `didi init`, you can use the `/didi` command in Claude Code:
+
+### View ticket details
+```
+/didi desc DDI-123
+```
+
+### Open ticket workspace
+```
+/didi open DDI-456
+```
+
+### Working with execution plans
+
+Once you've opened a ticket, Claude Code will automatically know to reference execution plans at `.jira/{TICKET-ID}/plan.md` when you ask to:
+- "Update the execution plan"
+- "Show me the plan"
+- "Add a step to the plan"
+
+Claude will use conversation context to determine which ticket you're working on.
+
+## Project Structure
+
+```
+didi-cli/
+├── main.go           # Entry point
+├── cmd/
+│   ├── root.go       # Root command
+│   ├── list.go       # List command - non-interactive ticket list
+│   ├── open.go       # Open command implementation
+│   ├── desc.go       # Desc command implementation
+│   ├── save.go       # Save command - sync plan to Jira
+│   ├── kanban.go     # Kanban command - interactive board
+│   └── init.go       # Init command - install skill & check env
+└── .jira/            # Created workspaces (gitignored)
+    ├── .last-ticket  # Tracks last opened ticket
+    └── DDI-XXX/
+        ├── DDI-XXX.md
+        └── plan.md
+```

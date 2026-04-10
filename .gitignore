@@ -1,0 +1,29 @@
+# Binaries
+didi
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# Jira workspaces
+jira/
+.jira/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
