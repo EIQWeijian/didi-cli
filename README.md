@@ -1,6 +1,10 @@
 # Didi CLI
 
-A CLI tool for managing Jira tickets with local workspace integration.
+A CLI tool for managing Jira tickets with local workspace. 
+- Includes Claude Skill integration
+- syncs implementation plans `plan.md` back to jira
+
+<img width="1616" height="959" alt="Screenshot 2026-04-10 at 3 19 38 PM" src="https://github.com/user-attachments/assets/2642c1cd-7d62-4cc0-ba1d-12fc098530a9" />
 
 ## Quick Start
 
