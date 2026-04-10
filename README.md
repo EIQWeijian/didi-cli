@@ -39,8 +39,6 @@ didi save                # Save plan back to Jira
 
 ## Installation
 
-### One-line Install (Recommended)
-
 **macOS & Linux:**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/EIQWeijian/didi-cli/main/install.sh | bash
@@ -51,48 +49,7 @@ curl -fsSL https://raw.githubusercontent.com/EIQWeijian/didi-cli/main/install.sh
 INSTALL_DIR=/usr/local/bin curl -fsSL https://raw.githubusercontent.com/EIQWeijian/didi-cli/main/install.sh | bash
 ```
 
-### Manual Installation
-
-**macOS (Apple Silicon):**
-```bash
-curl -L -o ~/go/bin/didi https://github.com/EIQWeijian/didi-cli/releases/latest/download/didi-darwin-arm64
-chmod +x ~/go/bin/didi
-```
-
-**macOS (Intel):**
-```bash
-curl -L -o ~/go/bin/didi https://github.com/EIQWeijian/didi-cli/releases/latest/download/didi-darwin-amd64
-chmod +x ~/go/bin/didi
-```
-
-**Linux:**
-```bash
-curl -L -o ~/go/bin/didi https://github.com/EIQWeijian/didi-cli/releases/latest/download/didi-linux-amd64
-chmod +x ~/go/bin/didi
-```
-
-**Windows:**
-Download [didi-windows-amd64.exe](https://github.com/EIQWeijian/didi-cli/releases/latest/download/didi-windows-amd64.exe) and add to your PATH.
-
-### Option 4: Build from Source
-
-**Prerequisites:**
-- Go 1.19 or later
-- `~/go/bin` in your PATH
-
-```bash
-# Clone the repository
-git clone git@github.com:EIQWeijian/didi-cli.git
-cd didi-cli
-
-# Build and install
-go build -o ~/go/bin/didi
-
-# Verify installation
-which didi
-```
-
-### Initialize didi
+### Initialize
 
 After installation, initialize didi to install the Claude Code skill and verify your environment:
 
