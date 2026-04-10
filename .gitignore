@@ -5,6 +5,7 @@ didi
 *.dll
 *.so
 *.dylib
+dist/
 
 # Test binary
 *.test
@@ -35,3 +36,6 @@ jira/
 *.swp
 *.swo
 *~
+
+# macOS
+.DS_Store

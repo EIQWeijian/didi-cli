@@ -202,6 +202,20 @@ After running `didi init`, you can use the `/didi` command in Claude Code:
 /didi open DDI-456
 ```
 
+### Generate implementation plan
+```
+/didi plan DDI-456
+```
+
+Claude will analyze the codebase and generate a detailed technical implementation plan focused on code changes:
+- Technical implementation steps with code examples
+- Testing strategy (unit, integration, e2e tests)
+- Test files to create/modify
+- Data flow diagrams
+- Files changed summary
+
+**Focus:** Plans are optimized for creating quality PRs, not project management. They exclude PR checklists, rollout plans, risks & mitigations, and success criteria.
+
 ### Working with execution plans
 
 Once you've opened a ticket, Claude Code will automatically know to reference execution plans at `.jira/{TICKET-ID}/plan.md` when you ask to:

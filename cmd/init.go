@@ -25,6 +25,7 @@ Manage Jira tickets using the didi CLI tool with local workspace integration.
 /didi list
 /didi desc DDI-123
 /didi open DDI-456
+/didi plan DDI-456
 /didi save
 /didi save DDI-123
 ` + "```" + `
@@ -49,6 +50,34 @@ Opens a Jira ticket and creates a local workspace with:
 - Execution plan extracted from comments (if available)
 - Saves ticket as the "last ticket" for convenience
 
+### ` + "`/didi plan TICKET-ID`" + `
+
+Generates a technical implementation plan focused on code changes for a quality PR:
+
+**What to Include:**
+- **Technical Implementation Steps** - Detailed steps with code examples showing what to change
+- **Testing Strategy** - What tests to write and where (unit, integration, e2e)
+- **Test Files** - Specific test files to create/modify with example test cases
+- **Data Flow** - How data moves through the system (as text or simple diagrams)
+- **Files Changed Summary** - Table of files that will be modified and why
+
+**What to Exclude:**
+- PR checklists or approval workflows
+- Rollout plans or deployment steps
+- Risks & mitigations sections
+- Open questions or decision points
+- Success criteria or metrics
+
+**Focus:** The plan should enable a developer to implement the changes and create a complete, well-tested PR. It's about "how to code this" not "how to manage the project."
+
+**Process:**
+1. Read ticket details from ` + "`.jira/{TICKET-ID}/{TICKET-ID}.md`" + ` if it exists
+2. If workspace doesn't exist, run ` + "`didi open {TICKET-ID}`" + ` first
+3. Analyze the codebase to understand relevant files and patterns
+4. Generate implementation plan with concrete code examples
+5. Write to ` + "`.jira/{TICKET-ID}/plan.md`" + `
+6. Display summary to user
+
 ### ` + "`/didi save [TICKET-ID]`" + `
 
 Saves the local execution plan back to Jira as a comment:
@@ -61,7 +90,7 @@ Saves the local execution plan back to Jira as a comment:
 ### Step 1: Parse Command
 
 Parse the user's input to extract:
-1. The subcommand: ` + "`list`" + `, ` + "`desc`" + `, ` + "`open`" + `, or ` + "`save`" + `
+1. The subcommand: ` + "`list`" + `, ` + "`desc`" + `, ` + "`open`" + `, ` + "`plan`" + `, or ` + "`save`" + `
 2. The ticket ID (e.g., ` + "`DDI-123`" + `, ` + "`LTD-456`" + `) - optional for ` + "`save`" + ` and ` + "`list`" + ` commands
 
 ### Step 2: Execute Command
@@ -93,6 +122,110 @@ This will:
 3. Save ticket details to ` + "`.jira/TICKET-ID/TICKET-ID.md`" + `
 4. Extract execution plan from comments (if found) and save to ` + "`.jira/TICKET-ID/plan.md`" + `
 5. Save ticket as the "last ticket"
+
+**For ` + "`plan`" + ` command:**
+
+This does NOT run a didi command - you generate the plan directly using your AI capabilities.
+
+1. **Check if workspace exists:**
+   - Look for ` + "`.jira/{TICKET-ID}/`" + ` directory
+   - If doesn't exist, run ` + "`didi open {TICKET-ID}`" + ` first
+
+2. **Read ticket information:**
+   - Read ` + "`.jira/{TICKET-ID}/{TICKET-ID}.md`" + ` to understand the requirements
+
+3. **Analyze codebase:**
+   - Search for relevant files using Grep/Glob
+   - Understand existing patterns and architecture
+   - Identify which files need changes
+
+4. **Generate implementation plan:**
+   Create a detailed technical plan in ` + "`.jira/{TICKET-ID}/plan.md`" + ` with this structure:
+
+` + "```markdown" + `
+# {TICKET-ID} - {Title}
+
+## Context
+
+{Brief summary from ticket description}
+
+---
+
+## Implementation Plan
+
+### Step 1 — {What to implement}
+
+**Files to modify:**
+- ` + "`path/to/file1.ext`" + `
+- ` + "`path/to/file2.ext`" + `
+
+**Changes:**
+
+` + "```language" + `
+// Example code showing what to add/change
+function example() {
+  // Implementation details
+}
+` + "```" + `
+
+**Why:** {Brief explanation of why this change is needed}
+
+---
+
+### Step 2 — {Next implementation step}
+
+...
+
+---
+
+## Testing Strategy
+
+### Unit Tests
+
+**File:** ` + "`path/to/test_file.test.ext`" + `
+
+` + "```language" + `
+describe('Feature', () => {
+  it('should handle case X', () => {
+    // Test implementation
+  });
+});
+` + "```" + `
+
+### Integration Tests
+
+{What integration tests to write}
+
+### E2E Tests (if needed)
+
+{What e2e scenarios to cover}
+
+---
+
+## Data Flow
+
+{Describe how data moves through the system}
+
+1. User action → Component A
+2. Component A → Service B
+3. Service B → Database
+4. Response flows back
+
+---
+
+## Files Changed
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| ` + "`path/to/file.ext`" + ` | Modify | Add new function X |
+| ` + "`path/to/test.ext`" + ` | Create | Unit tests for X |
+| ` + "`path/to/types.ext`" + ` | Modify | Add new type definitions |
+` + "```" + `
+
+5. **Display summary:**
+   - Show which files will be changed
+   - Mention where the plan is saved
+   - Offer to make edits if needed
 
 **For ` + "`save`" + ` command:**
 ` + "```bash" + `
