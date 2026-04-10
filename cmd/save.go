@@ -32,10 +32,11 @@ type ADFDocument struct {
 }
 
 type ADFNode struct {
-	Type    string        `json:"type"`
-	Content []interface{} `json:"content,omitempty"`
-	Text    string        `json:"text,omitempty"`
-	Marks   []interface{} `json:"marks,omitempty"`
+	Type    string                 `json:"type"`
+	Content []interface{}          `json:"content,omitempty"`
+	Text    string                 `json:"text,omitempty"`
+	Marks   []interface{}          `json:"marks,omitempty"`
+	Attrs   map[string]interface{} `json:"attrs,omitempty"`
 }
 
 func runSave(cmd *cobra.Command, args []string) error {
@@ -162,7 +163,7 @@ func convertMarkdownToADF(markdown string) ADFDocument {
 		if strings.HasPrefix(trimmed, "#") {
 			flushParagraph()
 
-			level := 1
+			level := 0
 			for i := 0; i < len(trimmed) && trimmed[i] == '#'; i++ {
 				level++
 			}
@@ -173,6 +174,9 @@ func convertMarkdownToADF(markdown string) ADFDocument {
 			headingText := strings.TrimSpace(strings.TrimLeft(trimmed, "#"))
 			heading := ADFNode{
 				Type: "heading",
+				Attrs: map[string]interface{}{
+					"level": level,
+				},
 				Content: []interface{}{
 					ADFNode{
 						Type: "text",
@@ -180,7 +184,6 @@ func convertMarkdownToADF(markdown string) ADFDocument {
 					},
 				},
 			}
-			// Add level attribute (ADF uses attrs, but we'll keep it simple for now)
 			doc.Content = append(doc.Content, heading)
 			continue
 		}

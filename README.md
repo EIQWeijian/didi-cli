@@ -2,6 +2,26 @@
 
 A CLI tool for managing Jira tickets with local workspace integration.
 
+## Quick Start
+
+```bash
+# 1. Install
+go build -o ~/go/bin/didi
+
+# 2. Configure environment variables
+export JIRA_API_TOKEN="your-api-token"
+export JIRA_BASE_URL="https://your-domain.atlassian.net"
+export JIRA_EMAIL="your-email@example.com"
+
+# 3. Initialize Claude Code skill (optional)
+didi init
+
+# 4. Start using!
+didi list                # List your active sprint tickets
+didi open DDI-123        # Open a ticket and create workspace
+didi save                # Save plan back to Jira
+```
+
 ## Features
 
 - List active sprint tickets with clickable hyperlinks
@@ -15,10 +35,36 @@ A CLI tool for managing Jira tickets with local workspace integration.
 
 ## Installation
 
-### Build the binary
+### Prerequisites
+
+- Go 1.19 or later
+- `~/go/bin` in your PATH (for global installation)
+
+Add this to your `~/.zshrc` or `~/.bashrc` if not already present:
+```bash
+export PATH="$HOME/go/bin:$PATH"
+```
+
+Then reload your shell:
+```bash
+source ~/.zshrc  # or source ~/.bashrc
+```
+
+### Build and Install Globally
+
+Clone the repository and build:
 
 ```bash
+# Clone the repository
+git clone git@github.com:EIQWeijian/didi-cli.git
+cd didi-cli
+
+# Build and install globally
 go build -o ~/go/bin/didi
+
+# Verify installation
+which didi
+# Should output: /Users/yourname/go/bin/didi
 ```
 
 ### Initialize didi
@@ -32,6 +78,31 @@ didi init
 This will:
 - Check that required Jira environment variables are set
 - Install the `/didi` skill to `~/.claude/skills/didi/`, making it available in all Claude Code sessions
+
+### Alternative: Download Pre-built Binary
+
+Download the latest release for your platform from [GitHub Releases](https://github.com/EIQWeijian/didi-cli/releases):
+
+**macOS (Apple Silicon):**
+```bash
+curl -L -o ~/go/bin/didi https://github.com/EIQWeijian/didi-cli/releases/latest/download/didi-darwin-arm64
+chmod +x ~/go/bin/didi
+```
+
+**macOS (Intel):**
+```bash
+curl -L -o ~/go/bin/didi https://github.com/EIQWeijian/didi-cli/releases/latest/download/didi-darwin-amd64
+chmod +x ~/go/bin/didi
+```
+
+**Linux:**
+```bash
+curl -L -o ~/go/bin/didi https://github.com/EIQWeijian/didi-cli/releases/latest/download/didi-linux-amd64
+chmod +x ~/go/bin/didi
+```
+
+**Windows:**
+Download [didi-windows-amd64.exe](https://github.com/EIQWeijian/didi-cli/releases/latest/download/didi-windows-amd64.exe) and add to your PATH.
 
 ## Configuration
 
@@ -54,10 +125,26 @@ export JIRA_EMAIL="your-email@example.com"
 
 ### CLI Usage
 
+#### List active sprint tickets
+
+```bash
+didi list
+```
+
+Non-interactive list of all tickets assigned to you in the active sprint, grouped by status. Ticket IDs are clickable hyperlinks in supported terminals (iTerm2, VS Code terminal, Windows Terminal, modern Terminal.app).
+
+#### View ticket details
+
+```bash
+didi desc DDI-123
+```
+
+Displays formatted ticket information in the terminal with colors and clickable links.
+
 #### Open a Jira ticket
 
 ```bash
-./didi open DDI-435
+didi open DDI-435
 ```
 
 This command will:
@@ -67,30 +154,22 @@ This command will:
 4. Extract any execution plan from comments and save to `.jira/DDI-435/plan.md`
 5. Save as the "last ticket" for convenience
 
-#### List active sprint tickets
-
-```bash
-./didi list
-```
-
-Non-interactive list of all tickets assigned to you in the active sprint, grouped by status. Ticket IDs are clickable hyperlinks in supported terminals (iTerm2, VS Code terminal, Windows Terminal, modern Terminal.app).
-
-#### View ticket details
-
-```bash
-./didi desc DDI-123
-```
-
-Displays formatted ticket information in the terminal with colors and clickable links.
-
 #### Save execution plan to Jira
 
 ```bash
-./didi save          # Uses last opened ticket
-./didi save DDI-123  # Specify ticket ID
+didi save          # Uses last opened ticket
+didi save DDI-123  # Specify ticket ID
 ```
 
 Reads `.jira/{TICKET-ID}/plan.md` and posts it as a comment to the Jira ticket. This syncs your local plan changes back to Jira.
+
+#### Interactive Kanban Board
+
+```bash
+didi kanban
+```
+
+Opens an interactive kanban board showing all tickets in your active sprint with keyboard navigation.
 
 ### Example Output
 
