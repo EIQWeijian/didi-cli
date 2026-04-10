@@ -39,53 +39,19 @@ didi save                # Save plan back to Jira
 
 ## Installation
 
-### Prerequisites
+### One-line Install (Recommended)
 
-- Go 1.19 or later
-- `~/go/bin` in your PATH (for global installation)
-
-Add this to your `~/.zshrc` or `~/.bashrc` if not already present:
+**macOS & Linux:**
 ```bash
-export PATH="$HOME/go/bin:$PATH"
+curl -fsSL https://raw.githubusercontent.com/EIQWeijian/didi-cli/main/install.sh | bash
 ```
 
-Then reload your shell:
+**Custom install location:**
 ```bash
-source ~/.zshrc  # or source ~/.bashrc
+INSTALL_DIR=/usr/local/bin curl -fsSL https://raw.githubusercontent.com/EIQWeijian/didi-cli/main/install.sh | bash
 ```
 
-### Build and Install Globally
-
-Clone the repository and build:
-
-```bash
-# Clone the repository
-git clone git@github.com:EIQWeijian/didi-cli.git
-cd didi-cli
-
-# Build and install globally
-go build -o ~/go/bin/didi
-
-# Verify installation
-which didi
-# Should output: /Users/yourname/go/bin/didi
-```
-
-### Initialize didi
-
-After building the binary, initialize didi to install the Claude Code skill and verify your environment:
-
-```bash
-didi init
-```
-
-This will:
-- Check that required Jira environment variables are set
-- Install the `/didi` skill to `~/.claude/skills/didi/`, making it available in all Claude Code sessions
-
-### Alternative: Download Pre-built Binary
-
-Download the latest release for your platform from [GitHub Releases](https://github.com/EIQWeijian/didi-cli/releases):
+### Manual Installation
 
 **macOS (Apple Silicon):**
 ```bash
@@ -107,6 +73,36 @@ chmod +x ~/go/bin/didi
 
 **Windows:**
 Download [didi-windows-amd64.exe](https://github.com/EIQWeijian/didi-cli/releases/latest/download/didi-windows-amd64.exe) and add to your PATH.
+
+### Option 4: Build from Source
+
+**Prerequisites:**
+- Go 1.19 or later
+- `~/go/bin` in your PATH
+
+```bash
+# Clone the repository
+git clone git@github.com:EIQWeijian/didi-cli.git
+cd didi-cli
+
+# Build and install
+go build -o ~/go/bin/didi
+
+# Verify installation
+which didi
+```
+
+### Initialize didi
+
+After installation, initialize didi to install the Claude Code skill and verify your environment:
+
+```bash
+didi init
+```
+
+This will:
+- Check that required Jira environment variables are set
+- Install the `/didi` skill to `~/.claude/skills/didi/`, making it available in all Claude Code sessions
 
 ## Configuration
 
