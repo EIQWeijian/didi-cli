@@ -30,6 +30,7 @@ didi save                # Save plan back to Jira
 
 - List active sprint tickets with clickable hyperlinks
 - Fetch Jira ticket information and create local workspaces
+- Fetch Confluence wiki pages and display in terminal
 - Automatically extract execution plans from ticket comments
 - Store ticket details in markdown format
 - Sync local execution plan changes back to Jira as comments
@@ -110,6 +111,14 @@ This command will:
 3. Save ticket details to `.jira/DDI-435/DDI-435.md`
 4. Extract any execution plan from comments and save to `.jira/DDI-435/plan.md`
 5. Save as the "last ticket" for convenience
+
+#### Fetch wiki page content
+
+```bash
+didi get https://evolutioniq.atlassian.net/wiki/spaces/ENG/pages/562692754/Product+Repositories
+```
+
+Fetches Confluence wiki pages and displays the content in your terminal. Uses the same Jira API credentials.
 
 #### Save execution plan to Jira
 

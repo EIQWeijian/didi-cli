@@ -27,6 +27,7 @@ func init() {
 	rootCmd.AddCommand(openCmd)
 	rootCmd.AddCommand(descCmd)
 	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(getCmd)
 	rootCmd.AddCommand(kanbanCmd)
 	rootCmd.AddCommand(initCmd)
 	rootCmd.AddCommand(saveCmd)
