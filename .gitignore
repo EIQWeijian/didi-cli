@@ -30,6 +30,9 @@ jira/
 # Environment files
 .env
 
+# Claude Code local settings (may contain credentials)
+.claude/settings.local.json
+
 # IDE
 .idea/
 .vscode/

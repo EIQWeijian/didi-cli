@@ -459,16 +459,13 @@ func runInit(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to get home directory: %w", err)
 	}
 
-	// Create skill directory path
-	skillDir := filepath.Join(homeDir, ".claude", "skills", "didi")
+	commandsDir := filepath.Join(homeDir, ".claude", "commands")
 
-	// Create directory if it doesn't exist
-	if err := os.MkdirAll(skillDir, 0755); err != nil {
-		return fmt.Errorf("failed to create skill directory: %w", err)
+	if err := os.MkdirAll(commandsDir, 0755); err != nil {
+		return fmt.Errorf("failed to create commands directory: %w", err)
 	}
 
-	// Write skill.md file
-	skillPath := filepath.Join(skillDir, "skill.md")
+	skillPath := filepath.Join(commandsDir, "didi.md")
 	if err := os.WriteFile(skillPath, []byte(skillContent), 0644); err != nil {
 		return fmt.Errorf("failed to write skill file: %w", err)
 	}
