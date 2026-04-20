@@ -9,13 +9,14 @@ A CLI tool for managing Jira tickets with local workspace.
 ## Quick Start
 
 ```bash
-# 1. Install
-go build -o ~/go/bin/didi
+# 1. Install (downloads pre-built binary, no Go required)
+curl -fsSL https://raw.githubusercontent.com/EIQWeijian/didi-cli/main/install.sh | bash
 
-# 2. Configure environment variables
+# 2. Add to your ~/.bashrc or ~/.zshrc to persist across sessions
 export JIRA_API_TOKEN="your-api-token"
 export JIRA_BASE_URL="https://your-domain.atlassian.net"
 export JIRA_EMAIL="your-email@example.com"
+export PATH="$HOME/go/bin:$PATH"
 
 # 3. Initialize Claude Code skill (optional)
 didi init
@@ -60,17 +61,20 @@ didi init
 
 This will:
 - Check that required Jira environment variables are set
-- Install the `/didi` skill to `~/.claude/skills/didi/`, making it available in all Claude Code sessions
+- Install the `/didi` slash command to `~/.claude/commands/didi.md`, making it available in all Claude Code sessions
 
 ## Configuration
 
-Set the following environment variables:
+Add the following to your `~/.bashrc` or `~/.zshrc` so they persist across sessions:
 
 ```bash
 export JIRA_API_TOKEN="your-jira-api-token"
 export JIRA_BASE_URL="https://your-domain.atlassian.net"
 export JIRA_EMAIL="your-email@example.com"
+export PATH="$HOME/go/bin:$PATH"
 ```
+
+Then reload your shell: `source ~/.bashrc` (or `source ~/.zshrc`).
 
 ### Getting a Jira API Token
 
