@@ -62,7 +62,6 @@ didi init
 This will:
 - Check that required Jira environment variables are set
 - Install the `/didi` slash command to `~/.claude/commands/didi.md`, making it available in all Claude Code sessions
-- Configure JIRA env vars in `.claude/settings.local.json` so Claude Code's Bash tool can access them (Claude Code runs a non-interactive shell that doesn't load `~/.bashrc`)
 
 ## Configuration
 
