@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -472,6 +473,17 @@ func runInit(cmd *cobra.Command, args []string) error {
 
 	fmt.Printf("  %s✓%s Skill installed to %s%s%s\n", colorGreen, colorReset, colorCyan, skillPath, colorReset)
 
+	// Configure Claude Code environment variables
+	if hasAllEnvVars {
+		fmt.Printf("\n%s%sConfiguring Claude Code environment:%s\n", colorBold, colorBlue, colorReset)
+		if err := configureClaudeEnv(jiraToken, jiraBaseURL, jiraEmail); err != nil {
+			fmt.Printf("  %s⚠%s Could not configure Claude Code env: %v\n", colorYellow, colorReset, err)
+			fmt.Printf("    Claude Code's Bash tool uses a non-interactive shell, so ~/.bashrc exports\n")
+			fmt.Printf("    are not loaded. You can manually add to .claude/settings.local.json:\n")
+			fmt.Printf("    %s{\"env\": {\"JIRA_API_TOKEN\": \"...\", \"JIRA_BASE_URL\": \"...\", \"JIRA_EMAIL\": \"...\"}}%s\n", colorDim, colorReset)
+		}
+	}
+
 	fmt.Printf("\n%s%sUsage in Claude Code:%s\n", colorBold, colorGreen, colorReset)
 	fmt.Printf("  /didi desc DDI-123\n")
 	fmt.Printf("  /didi open DDI-456\n")
@@ -479,8 +491,52 @@ func runInit(cmd *cobra.Command, args []string) error {
 	if hasAllEnvVars {
 		fmt.Printf("\n%s✓ All set! You're ready to use didi.%s\n", colorGreen, colorReset)
 	} else {
-		fmt.Printf("\n%s⚠ Set the environment variables above to start using didi.%s\n", colorYellow, colorReset)
+		fmt.Printf("\n%s⚠ Set the environment variables above, then re-run: didi init%s\n", colorYellow, colorReset)
 	}
 
+	return nil
+}
+
+func configureClaudeEnv(token, baseURL, email string) error {
+	claudeDir := ".claude"
+	settingsPath := filepath.Join(claudeDir, "settings.local.json")
+
+	var settings map[string]interface{}
+
+	data, err := os.ReadFile(settingsPath)
+	if err == nil {
+		if err := json.Unmarshal(data, &settings); err != nil {
+			return fmt.Errorf("invalid JSON in %s: %w", settingsPath, err)
+		}
+	} else if os.IsNotExist(err) {
+		if err := os.MkdirAll(claudeDir, 0755); err != nil {
+			return fmt.Errorf("failed to create %s: %w", claudeDir, err)
+		}
+		settings = make(map[string]interface{})
+	} else {
+		return fmt.Errorf("failed to read %s: %w", settingsPath, err)
+	}
+
+	env, ok := settings["env"].(map[string]interface{})
+	if !ok {
+		env = make(map[string]interface{})
+	}
+
+	env["JIRA_API_TOKEN"] = token
+	env["JIRA_BASE_URL"] = baseURL
+	env["JIRA_EMAIL"] = email
+	settings["env"] = env
+
+	out, err := json.MarshalIndent(settings, "", "  ")
+	if err != nil {
+		return fmt.Errorf("failed to marshal settings: %w", err)
+	}
+
+	if err := os.WriteFile(settingsPath, append(out, '\n'), 0644); err != nil {
+		return fmt.Errorf("failed to write %s: %w", settingsPath, err)
+	}
+
+	fmt.Printf("  %s✓%s JIRA env vars saved to %s%s%s\n", colorGreen, colorReset, colorCyan, settingsPath, colorReset)
+	fmt.Printf("    %sThis ensures Claude Code can access Jira even in non-interactive shells.%s\n", colorDim, colorReset)
 	return nil
 }
